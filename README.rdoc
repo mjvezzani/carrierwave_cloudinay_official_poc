@@ -1,16 +1,81 @@
-1.) Add to gemfile: gem 'carrierwave'
-2.) Generate uploader with: rails generate uploader UploaderName
-      This creates an uploader in: app/uploaders/name_uploader.rb
-3.) Add a column to your database through a migration
-      rails generate migration add_picture_to_posts picture:string
-      rake db:migrate
-4.) Mount the uploader in the model
-      mount_uploader :picture, PictureUploader
-5.) Confirm uploading capabilities:
-      p = Post.new
-      p.image = params[:file] or p.image = File.open('path/to/file.png')
-      p.save!
+Comprehensive guide to setting up CarrierWave and Cloudinary
 
-      p.picture.url => /path/to/file.png
+It makes most sense to start with CarrierWave. 
 
-6.) 
+* First, add gem 'carrierwave' to your gemfile
+* Next, generate an uploader of the type of resource you 
+  are wanting to upload. For example, pictures:
+    rails generate uploder Pictures
+
+  or perhaps a different kind of file:
+    rails generate uploader Pdf
+
+* When the uploader has been generated, it now needs to be 
+  associated with a particular model. Do this by creating
+  a migration and running the rake task:
+    rails generate migration add_picture_to_posts picture:string
+    rake db:migrate
+
+* Now mount the uploader in the model. 
+    mount_uploader :picture, PictureUploader
+
+* You can now confirm the uploading capabilities in the console
+
+    p = Post.new
+    p.image = params[:file] OR p.image = File.open('path/to/file.png')
+    p.save!
+
+    p.picture.url => /path/to/file.png
+
+Now that CarrierWave is behaving in the expected way, it is
+necessary to include the Cloudinary gem to enable cloud based
+uploading capabilities
+
+* First, add gem 'cloudinary' in your gemfile, beneath the carrierwave gem
+* Next, create a cloudinary.yml file with your Cloudinary credentials:
+    # config/cloudinary.yml
+
+    development:
+      cloud_name: "samplecloudname"
+      api_key: "7777777777777"
+      api_secret: "h5gg3hg5hg3hghg34gf35hg"
+
+    production:
+      cloud_name: "samplecloudname"
+      api_key: "7777777777777"
+      api_secret: "h5gg3hg5hg3hghg34gf35hg"
+
+  This enables posting to your Cloudinary account.
+
+* Go to the uploader file you generated earlier, and include the
+  Cloudinary plugin:
+  
+    # app/uploaders/pictures_uploader.rb
+
+    include Cloudinary::CarrierWave
+
+  Also, it is necessary to comment out
+
+    storage :file
+
+  and
+
+    def store_dir
+      ...
+    end
+
+  This is necessary because if left uncommented, the app will upload 
+  your file to your local machine.
+
+* Now add the necessary code to your view to finish up the front end:
+
+    <%= f.hidden_field(:picture_cache) %>
+    <%= f.file_field(:picture) %>
+
+* Also, include the necessary strong parameters in your controller:
+
+    def post_params
+      params.require(:post).include(:title, :body, :picture_cache, :picture)
+    end
+
+* That's it! Now you are set to upload files to Cloudinary through your application.
