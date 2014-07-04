@@ -40,3 +40,6 @@ gem 'spring',        group: :development
 
 # Picture/file uploads
 gem 'carrierwave'
+
+# Cloud file storage
+gem 'cloudinary'

@@ -1,0 +1,9 @@
+development:
+  cloud_name: "vezzanirails"
+  api_key: "897276512735871"
+  api_secret: "KFKHEKgWgHJl3qFnLRavtFr7aag"
+
+production:
+  cloud_name: "vezzanirails"
+  api_key: "897276512735871"
+  api_secret: "KFKHEKgWgHJl3qFnLRavtFr7aag"
