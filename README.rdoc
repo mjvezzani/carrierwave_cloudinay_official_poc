@@ -1,28 +1,16 @@
-== README
+1.) Add to gemfile: gem 'carrierwave'
+2.) Generate uploader with: rails generate uploader UploaderName
+      This creates an uploader in: app/uploaders/name_uploader.rb
+3.) Add a column to your database through a migration
+      rails generate migration add_picture_to_posts picture:string
+      rake db:migrate
+4.) Mount the uploader in the model
+      mount_uploader :picture, PictureUploader
+5.) Confirm uploading capabilities:
+      p = Post.new
+      p.image = params[:file] or p.image = File.open('path/to/file.png')
+      p.save!
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+      p.picture.url => /path/to/file.png
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+6.) 
